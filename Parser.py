@@ -5,6 +5,7 @@
 import sys
 import pdfminer.high_level
 import Spoken
+import re
 
 class Parser():
     def __init__(self, path, first, last, people, line_delim, speak_delim, tone_delim):
@@ -14,13 +15,13 @@ class Parser():
     def parse(self, people, line_delim, speak_delim, tone_delim):
         self.segments = []
         pars = self.raw_text.split(line_delim)
-
+        self.pars_store = pars
 
         for par in pars:
             is_line = False
 
             for c in people:
-                if par.lower().startswith(c):
+                if par.lower().startswith(c + speak_delim) or par.lower().startswith(c + tone_delim):
                     is_line = True
                     speaker = c
 
@@ -54,4 +55,4 @@ if __name__ == '__main__':
     p = People.People('people.ods')
     cast = p.people
 
-    parser = Parser('crucible.pdf', 16, 16, cast, '\n\n', ':', ',')
+    parser = Parser('crucible.pdf', 16, 17, cast, '\n\n', ':', ',')
