@@ -1,14 +1,19 @@
-# ScriptReaader
+# ScriptReader
 # June Knauth (github.com/knauth), 20230214
 
-import nltk
 import sys
 from pdfminer.high_level import extract_text
+import pandas as pd
 
-nltk.download('punkt')
-nltk.download('averaged_perceptron_tagger')
-nltk.download('maxent_ne_chunker')
-nltk.download('words')
+class Spoken():
+    def __init__(self, content):
+        self.content = content
+
+class Line(Spoken):
+    def __init__(self, content, speaker, tone):
+        Spoken.__init__(content)
+        self.speaker = speaker
+        self.tone = tone
 
 try:
     input_pdf = sys.argv[1]
@@ -21,12 +26,5 @@ except:
 with open("./text") as f:
     pdf_text = f.read()
 
-tokens = nltk.word_tokenize(pdf_text)
-tagged = nltk.pos_tag(tokens)
-entities = nltk.chunk.ne_chunk(tagged)
+people = pd.read_excel("./people.ods")
 
-people = []
-
-for en in entities:
-    if type(en) == nltk.tree.tree.Tree:
-        people.append(en)
