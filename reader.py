@@ -1,5 +1,5 @@
 # ScriptReaader
-# June Knauth (knauth), 20230214
+# June Knauth (github.com/knauth), 20230214
 
 import nltk
 import sys
@@ -13,7 +13,8 @@ nltk.download('words')
 try:
     input_pdf = sys.argv[1]
 except:
-    print("Error: No file provided")
+    pass
+    # print("Error: No file provided")
     # raise Exception
 
 #pdf_text = extract_text(input_pdf)
@@ -24,7 +25,8 @@ tokens = nltk.word_tokenize(pdf_text)
 tagged = nltk.pos_tag(tokens)
 entities = nltk.chunk.ne_chunk(tagged)
 
+people = []
+
 for en in entities:
-    print(en)
-    if en.label() == 'PERSON':
-        print(en)
+    if type(en) == nltk.tree.tree.Tree:
+        people.append(en)
