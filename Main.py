@@ -5,6 +5,7 @@ import sys
 import Parser
 import People
 import Spoken
+import pyttsx3 as tts
 
 try:
     input_pdf = sys.argv[1]
@@ -20,5 +21,4 @@ with open("./text") as f:
 p = People.People('people.ods')
 cast = p.people
 
-parser = Parser.Parser('crucible.pdf', 16, 16, cast, '\n\n', ':', ',')
-parser.parse()
+parser = Parser.Parser('crucible.pdf', None, None, cast, '\n\n', ':', ',')

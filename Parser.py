@@ -18,27 +18,32 @@ class Parser():
         self.pars_store = pars
 
         for par in pars:
-            is_line = False
+            try:
+                is_line = False
 
-            for c in people:
-                if par.lower().startswith(c + speak_delim) or par.lower().startswith(c + tone_delim):
-                    is_line = True
-                    speaker = c
+                for c in people:
+                    if par.lower().startswith(c + speak_delim) or par.lower().startswith(c + tone_delim):
+                        is_line = True
+                        speaker = c
 
-            if not is_line:
-                speaker = None
-                tone = None
-                content = par
-
-            else:
-                pre, content = par.split(speak_delim, 1)
-
-                if tone_delim in pre:
-                    speaker, tone = pre.split(tone_delim, 1)
+                if not is_line:
+                    speaker = None
+                    tone = None
+                    content = par
 
                 else:
-                    speaker = pre
-                    tone = None
+                    pre, content = par.split(speak_delim, 1)
+
+                    if tone_delim in pre:
+                        speaker, tone = pre.split(tone_delim, 1)
+
+                    else:
+                        speaker = pre
+                        tone = None
+            except:
+                content = par
+                speaker = None
+                tone = None
 
             seg = Spoken.Spoken(content, speaker, tone)
             self.segments.append(seg)
