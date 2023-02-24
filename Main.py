@@ -14,10 +14,8 @@ from PyQt6.QtWidgets import (QApplication, QDialog, QFileDialog, QPushButton, QH
                              QFormLayout, QLabel, QLineEdit, QCheckBox, QTextEdit, QMessageBox)
 
 class MainApp(QDialog):
-    def __init__(self, people, parent=None):
+    def __init__(self, parent=None):
         super(MainApp, self).__init__(parent)
-
-        self.cast = people
 
         self.setWindowTitle("ScriptReader")
         mainLayout = QVBoxLayout()
@@ -36,7 +34,7 @@ class MainApp(QDialog):
         self.PDFButton.clicked.connect(self.getPDFData)
 
     def getPDFData(self):
-        pdf_dialog = PDFDialog(self.cast)
+        pdf_dialog = PDFDialog()
         pdf_dialog.exec()
         self.parsedPDF = pdf_dialog.ParsedPDF
 
@@ -75,7 +73,7 @@ class MainApp(QDialog):
         self.navButtons.addWidget(nextButton)
 
     def createParDisplay(self):
-        self.parGroupBox = QGroupBox("Paragraph") # Box for pretty border and label
+        self.parGroupBox = QGroupBox() # Box for pretty border and label
         layout = QFormLayout() # QForm layout within the box
         # Setup display boxes
         self.displayParagraphInfo = QLabel("No PDF Loaded")
@@ -98,10 +96,8 @@ class MainApp(QDialog):
         self.parGroupBox.setLayout(layout)
 
 class PDFDialog(QDialog):
-    def __init__(self, people, parent=None):
+    def __init__(self, parent=None):
         super(PDFDialog, self).__init__(parent)
-
-        self.cast = people
 
         self.setWindowTitle("PDF Input Dialog")
         mainLayout = QFormLayout()
@@ -154,11 +150,11 @@ class PDFDialog(QDialog):
             QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
             try:
                 if self.UsePageRange:
-                    self.ParsedPDF = Parser.Parser(self.PDFFile, self.FirstPage, self.LastPage, self.cast,
+                    self.ParsedPDF = Parser.Parser(self.PDFFile, self.FirstPage, self.LastPage,
                                      self.ParDelim, self.SpeakDelim, self.ToneDelim)
 
                 else:
-                    self.ParsedPDF = Parser.Parser(self.PDFFile, None, None, self.cast,
+                    self.ParsedPDF = Parser.Parser(self.PDFFile, None, None,
                                      self.ParDelim, self.SpeakDelim, self.ToneDelim)
 
                 QApplication.restoreOverrideCursor()
@@ -202,12 +198,9 @@ class PDFDialog(QDialog):
        msg.exec()
 
 if __name__ == '__main__':
-    p = People.People('people.ods')
-    cast = p.people
-
     app = QApplication([])
     app.setStyle('fusion')
 
-    win = MainApp(cast)
+    win = MainApp()
     win.show()
     app.exec()

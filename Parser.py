@@ -8,15 +8,49 @@ import Spoken
 import re
 import unicodedata
 
+MIN_CHAR_OCCURENCES = 2
+
 class Parser():
-    def __init__(self, path, first, last, people, line_delim, speak_delim, tone_delim):
-        self.extract_text(path, first, last)
-        self.parse(people, line_delim, speak_delim, tone_delim)
+    def __init__(self, path, first, last, line_delim, speak_delim, tone_delim):
+        full_text = self.extract_text(path, None, None)
+        self.find_characters(full_text, line_delim, speak_delim, tone_delim)
+
+        pages_text = self.extract_text(path, first, last)
+        self.parse(pages_text, self.people, line_delim, speak_delim, tone_delim)
+
+    # Find characters. Look for the speaker delimiter, and count the number
+    # of occurences of the string which precedes in the entire text.
+    # Strings above a certain number of occurences are probably characters
+    # Write that to a file to let the user edit the voices
+    def find_characters(self, raw_text, line_delim, speak_delim, tone_delim):
+        self.segments = []
+        pars = raw_text.split(line_delim)
+        candidates = {}
+        people = []
+
+        # For every paragraph
+        for par in pars:
+            parl = par.lower()
+            # RegEx match for speaker or tone delimiter
+            pattern = re.compile(f"^(.*?)([{speak_delim}{tone_delim}]).*")
+            match = re.search(pattern, parl)
+
+            if match:
+                cand = match.group(1) # Everything before whichever comes first
+                candidates[cand] = candidates.get(cand, 0) + 1 # Count
+
+        # Find people
+        self.candidates = candidates
+        for k, v in candidates.items():
+            if v > MIN_CHAR_OCCURENCES:
+                people.append(k)
+
+        self.people = people
 
     # Parse extracted text
-    def parse(self, people, line_delim, speak_delim, tone_delim):
+    def parse(self, raw_text, people, line_delim, speak_delim, tone_delim):
         self.segments = []
-        pars = self.raw_text.split(line_delim)
+        pars = raw_text.split(line_delim)
         self.pars_store = pars
 
         # For every paragraph
@@ -55,6 +89,14 @@ class Parser():
             self.segments.append(seg)
 
         self.cleanup_text()
+        self.cleanup_speaker()
+
+    def cleanup_speaker(self):
+        for i in self.segments:
+            if i.speaker is not None:
+                i.speaker = i.speaker.rstrip()
+                i.speaker = i.speaker.lstrip()
+                i.speaker = "".join(ch for ch in i.speaker if unicodedata.category(ch)[0]!="C")
 
     def cleanup_text(self):
         for i in self.segments:
@@ -63,13 +105,9 @@ class Parser():
 
     def extract_text(self, path, first, last):
         if first is not None and last is not None:
-            self.raw_text = pdfminer.high_level.extract_text(path, page_numbers=range(first-1, last))
+            return pdfminer.high_level.extract_text(path, page_numbers=range(first-1, last))
         else:
-            self.raw_text = pdfminer.high_level.extract_text(path)
+            return pdfminer.high_level.extract_text(path)
 
 if __name__ == '__main__':
-    import People
-    p = People.People('people.ods')
-    cast = p.people
-
-    parser = Parser('crucible.pdf', 16, 17, cast, '\n\n', ':', ',')
+    parser = Parser('alchemist.pdf', 16, 17, '\n\n', ':', ',')
