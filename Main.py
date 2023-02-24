@@ -63,7 +63,7 @@ class MainApp(QDialog):
 
     def createNavButtons(self):
         self.navButtons = QHBoxLayout()
-        
+
         nextButton = QPushButton("Next")
         nextButton.clicked.connect(self.nextParagraph)
 
@@ -77,7 +77,6 @@ class MainApp(QDialog):
     def createParDisplay(self):
         self.parGroupBox = QGroupBox("Paragraph") # Box for pretty border and label
         layout = QFormLayout() # QForm layout within the box
- 
         # Setup display boxes
         self.displayParagraphInfo = QLabel("No PDF Loaded")
 
@@ -177,15 +176,15 @@ class PDFDialog(QDialog):
             self.ParDelim = str(self.editLineDelimLine.text())
             self.SpeakDelim = str(self.editSpeakDelimLine.text())
             self.ToneDelim = str(self.editToneDelimLine.text())
-            
+
             self.PDFFile = str(self.inputPDFFile)
-            
+
             assert self.PDFFile != ''
         except Exception as e:
            self.showErrorDialog("Input error- check to make sure inputs are correct and you have selected a file.")
            print(e)
            return False
-       
+
         return True
 
     def getPDFFilename(self):
@@ -199,7 +198,7 @@ class PDFDialog(QDialog):
 
        msg.setText(text)
        msg.setWindowTitle("Error")
-       
+
        msg.exec()
 
 if __name__ == '__main__':

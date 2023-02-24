@@ -2,3 +2,4 @@
 .~lock.people.ods#
 __pycache__/**
 *.ods
+*.pdf
