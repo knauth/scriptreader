@@ -100,6 +100,8 @@ class Parser():
 
     def cleanup_text(self):
         for i in self.segments:
+            i.content = i.content.rstrip()
+            i.content = i.content.lstrip()
             i.content = i.content.replace('\n', '')
             i.content = "".join(ch for ch in i.content if unicodedata.category(ch)[0]!="C")
 
