@@ -50,7 +50,7 @@ class MainApp(QDialog):
         self.displayParagraphInfo.setText(f"Paragraph {self.parPosition + 1}/{self.parCount}")
 
     def nextParagraph(self):
-        if self.parPosition != self.parCount:
+        if self.parPosition + 1 < self.parCount:
             self.parPosition += 1
         self.updateParagraphDisplay()
 
