@@ -18,6 +18,7 @@ class MainApp(QDialog):
         super(MainApp, self).__init__(parent)
 
         self.setWindowTitle("ScriptReader")
+        self.setWindowIcon(QtGui.QIcon('icons/autism.jpg'))
         mainLayout = QVBoxLayout()
         self.createPDFButton()
         self.createParDisplay()
